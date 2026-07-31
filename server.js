@@ -25,7 +25,7 @@ app.post('/chat', async (req, res) => {
     ];
 
     const response = await groq.chat.completions.create({
-      model: 'meta-llama/llama-4-scout-17b-16e-instruct', // free model
+      model: 'llama-3.1-8b-instant', // free model
       messages,
       max_tokens: 500,
       temperature: 0.7,
