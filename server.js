@@ -32,11 +32,24 @@ app.post('/chat', async (req, res) => {
     });
 
     const aiReply = response.choices[0]?.message?.content?.trim() || 'No response';
-    res.json({ reply: aiReply });
+    res.json({ 
+      reply: aiReply, 
+      usage: response.usage 
+    });
 
   } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: error.message });
+    console.error('Groq Error:', error.message);
+    
+    // Check for rate limit / token exhaustion
+    if (error.status === 429 || error.message.toLowerCase().includes('rate limit')) {
+      return res.status(429).json({ 
+        error: 'You have exhausted your free AI tokens for now. Please wait a bit and try again.' 
+      });
+    }
+
+    res.status(500).json({ 
+      error: 'The AI system encountered an unexpected error. Please try again.' 
+    });
   }
 });
 
